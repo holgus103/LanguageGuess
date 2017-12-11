@@ -1,3 +1,4 @@
+(defvar engine)
 ; variables for storing information whether a question has been asked already
 (defvar logograms)
 (defvar left-to-right)
@@ -29,6 +30,10 @@
 	(setq yes-accents NIL)
 )
 
+(defun query(question)
+	(y-or-n-p question)
+)
+
 (defmacro make-attribute(attribute-name yes-var var question)
 	`(defun ,attribute-name()
 		(if ,var
@@ -56,10 +61,37 @@
 	(ask-logograms)
 )
 
-(defun start
-	dolist
+(defun arabic()
+	(and (ask-left-to-right) (ask-abjad))
 )
 
-(defun query(question)
-	(y-or-n-p question)
+(defun hebrew()
+	(ask-left-to-right)
+)
+
+(defun russian()
+	(ask-cyrulic)
+)
+
+(defun french()
+	(ask-accents)
+)
+
+(defun german()
+	T
+)
+
+(setq engine '(("chinese" chinese)("arabic" arabic)("hebrew" hebrew)("russian" russian)("french" french)("german" german)))
+
+(defun start()
+	(dolist(v engine)
+		(if (funcall (second v))
+			(progn
+				(print (first v))
+				(init)
+				(clear-answers)
+				(return)
+			)
+		)
+	)
 )
